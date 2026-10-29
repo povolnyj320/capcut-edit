@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: every muscle group checks off */
+      #ck-row { position: absolute; left: 0; top: 1130px; width: 1080px; display: flex; justify-content: center; gap: 56px; }
+      .grp { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+      .ring { position: relative; width: 104px; height: 104px; border: 3px solid rgba(255, 255, 255, 0.85); border-radius: 50%; background: rgba(20, 18, 19, 0.35); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); }
+      .chk { position: absolute; inset: -3px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; }
+      .nm { font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+    </style>
+  </head>
+  <body>
+    <div id="checks" class="stage" data-composition-id="checks" data-start="0" data-duration="2.4" data-width="1080" data-height="1920">
+      <div id="checks-g" class="clip" data-start="0" data-duration="2.4" data-track-index="0">
+        <div id="ck-row">
+          <div class="grp"><div class="ring"><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div><div class="nm kicker">Legs</div></div>
+          <div class="grp"><div class="ring"><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div><div class="nm kicker">Push</div></div>
+          <div class="grp"><div class="ring"><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div><div class="nm kicker">Pull</div></div>
+          <div class="grp"><div class="ring"><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div><div class="nm kicker">Core</div></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"all":1.0,"out":2.1}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(".chk", { scale: 0, transformOrigin: "center center" });
+      tl.fromTo(".grp", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.06 }, 0.02);
+      // "train all muscle groups": one check per group, a beat apart
+      tl.to(".chk", { scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.12 }, C.all);
+      tl.to(".grp", { opacity: 0, duration: 0.16, ease: "power2.in", stagger: 0.02 }, C.out);
+      window.__timelines["checks"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

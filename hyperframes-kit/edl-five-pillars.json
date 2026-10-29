@@ -1,0 +1,426 @@
+{
+ "project": "Claude Test",
+ "words": "~/Movies/capcut-edit-work/DJI_20260317114428_0134_D.words.json",
+ "keep": [
+  [
+   0,
+   12
+  ],
+  [
+   17,
+   23
+  ],
+  [
+   24,
+   32
+  ],
+  [
+   51,
+   57
+  ],
+  [
+   58,
+   64
+  ],
+  [
+   71,
+   76
+  ],
+  [
+   77,
+   95
+  ],
+  [
+   106,
+   110
+  ],
+  [
+   111,
+   135
+  ],
+  [
+   184,
+   187
+  ],
+  [
+   202,
+   225
+  ],
+  [
+   246,
+   254
+  ],
+  [
+   255,
+   264
+  ],
+  [
+   265,
+   299
+  ],
+  [
+   315,
+   328
+  ]
+ ],
+ "zoom": [
+  1.0,
+  1.15
+ ],
+ "volume": 1.4,
+ "captions": false,
+ "broll": [
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/DAYTONA week was epic & loud to say the least 🙌🏼🏝️🏁 our full BTS YouTube video is up!! Link .mp4",
+   "at_word": 6,
+   "dur": 1.4,
+   "src": 27.0
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/DJI_20251028154505_0030_D.MP4",
+   "at_word": 29,
+   "dur": 2.0,
+   "src": 21.0
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/Midweek grind 💪🏼.mp4",
+   "at_word": 51,
+   "dur": 1.5,
+   "src": 0.3
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/PARADISE FOUND. 🌴🔥 Tag your training partner — who’s hitting this session with you (1).mp4",
+   "at_word": 74,
+   "dur": 1.6,
+   "src": 1.0
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/Days like these 🙌🏼.mp4",
+   "at_word": 91,
+   "dur": 1.5,
+   "src": 7.0
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/Can’t keep a cowboy down, onto the next one 🤠💪🏼 @aaronplessinger_7.mp4",
+   "at_word": 119,
+   "dur": 1.8,
+   "src": 1.5
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/DJI_20251029185525_0010_D.MP4",
+   "at_word": 129,
+   "dur": 1.0,
+   "src": 0.6
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/What a place 🤌🏻😍.mp4",
+   "at_word": 209,
+   "dur": 2.0,
+   "src": 2.0
+  },
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/It’s Daytona week 💪🏼🏁!!.mp4",
+   "at_word": 248,
+   "dur": 1.5,
+   "src": 2.5
+  }
+ ],
+ "sfx": [
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop light whoosh.wav",
+   "at_word": 9,
+   "volume": 0.45
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 17,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 58,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 106,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 184,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 255,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/click interface tone.wav",
+   "at_word": 30,
+   "offset": 0.5,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/glitch small electric.wav",
+   "at_word": 83,
+   "volume": 0.3
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop hard click.wav",
+   "at_word": 123,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 216,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/select tech.wav",
+   "at_word": 251,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/whoosh air.wav",
+   "at_word": 265,
+   "volume": 0.45
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/slide tech transition.wav",
+   "at_word": 295,
+   "volume": 0.3
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/typing smartphone.wav",
+   "at_word": 318,
+   "dur": 0.6,
+   "volume": 0.5
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop bubble notification.wav",
+   "at_word": 318,
+   "offset": 1.18,
+   "volume": 0.45
+  }
+ ],
+ "fix": {
+  "Jet": "Jett"
+ },
+ "graphics": [
+  {
+   "html": "graph.html",
+   "name": "graph",
+   "format": "mp4",
+   "at_word": 265,
+   "until_word": 282,
+   "cues": {
+    "train": 267,
+    "recov": 273,
+    "recov_end": "281e"
+   },
+   "lane": -1
+  },
+  {
+   "html": "tracker.html",
+   "name": "tracker",
+   "at_word": 17,
+   "until_word": 315,
+   "cues": {
+    "p1": 18,
+    "p2": 58,
+    "p3": 107,
+    "p4": 185,
+    "p5": 257
+   },
+   "lane": 0
+  },
+  {
+   "html": "hook.html",
+   "name": "hook",
+   "at": 0,
+   "until_word": 17,
+   "cues": {
+    "five": 9
+   },
+   "lane": 1
+  },
+  {
+   "html": "sprint.html",
+   "name": "sprint",
+   "at_word": 24,
+   "until_word": 58,
+   "cues": {
+    "high": 30,
+    "rep": 51
+   },
+   "lane": 1
+  },
+  {
+   "html": "aerobic.html",
+   "name": "aerobic",
+   "at_word": 71,
+   "until_word": 106,
+   "cues": {
+    "weak": 77,
+    "fast": 83,
+    "recov": 89
+   },
+   "lane": 1
+  },
+  {
+   "html": "strength.html",
+   "name": "strength",
+   "at_word": 111,
+   "until_word": 184,
+   "cues": {
+    "bike": 118,
+    "ne": 123
+   },
+   "lane": 1
+  },
+  {
+   "html": "jett.html",
+   "name": "jett",
+   "at_word": 216,
+   "until_word": 246,
+   "lane": 1
+  },
+  {
+   "html": "everyday.html",
+   "name": "everyday",
+   "at_word": 246,
+   "until_word": 255,
+   "cues": {
+    "checks": 251,
+    "every": 253
+   },
+   "lane": 1
+  },
+  {
+   "html": "weaker.html",
+   "name": "weaker",
+   "at_word": 282,
+   "until_word": 315,
+   "cues": {
+    "nogain": 289,
+    "weaker": 295
+   },
+   "lane": 1
+  },
+  {
+   "html": "cta.html",
+   "name": "cta",
+   "at_word": 315,
+   "cues": {
+    "type": 318
+   },
+   "lane": 1
+  },
+  {
+   "html": "card.html",
+   "name": "card1",
+   "at_word": 17,
+   "until_word": 24,
+   "cues": {
+    "reveal": 22
+   },
+   "lane": 2,
+   "vars": {
+    "num": "01",
+    "kicker": "Pillar 01",
+    "name": "Anaerobic capacity"
+   }
+  },
+  {
+   "html": "card.html",
+   "name": "card2",
+   "at_word": 58,
+   "until_word": 71,
+   "cues": {
+    "reveal": 63
+   },
+   "lane": 2,
+   "vars": {
+    "num": "02",
+    "kicker": "Pillar 02",
+    "name": "Aerobic capacity"
+   }
+  },
+  {
+   "html": "card.html",
+   "name": "card3",
+   "at_word": 106,
+   "until_word": 117,
+   "cues": {
+    "reveal": 110
+   },
+   "lane": 2,
+   "vars": {
+    "num": "03",
+    "kicker": "Pillar 03",
+    "name": "Strength"
+   }
+  },
+  {
+   "html": "card.html",
+   "name": "card4",
+   "at_word": 184,
+   "until_word": 212,
+   "cues": {
+    "reveal": 187
+   },
+   "lane": 2,
+   "vars": {
+    "num": "04",
+    "kicker": "Pillar 04",
+    "name": "Mobility"
+   }
+  },
+  {
+   "html": "card.html",
+   "name": "card5",
+   "at_word": 255,
+   "until_word": 265,
+   "cues": {
+    "reveal": 264
+   },
+   "lane": 2,
+   "vars": {
+    "num": "05",
+    "kicker": "Pillar 05 · most important",
+    "name": "Recovery"
+   }
+  },
+  {
+   "html": "captions-min.html",
+   "name": "captions",
+   "kind": "captions",
+   "at": 0,
+   "lane": 3
+  }
+ ],
+ "key": [
+  9,
+  22,
+  63,
+  110,
+  187,
+  264,
+  299,
+  318
+ ],
+ "push": [
+  264,
+  299
+ ],
+ "graphics_dir": "~/Movies/capcut-edit-work/graphics/five-pillars",
+ "music": {
+  "path": "~/Desktop/editing tools/claude music/A Game - Michael Ramir C (mixkit 777).mp3",
+  "volume": 0.25,
+  "src": 0,
+  "fade_in": 0.3,
+  "fade_out": 1.5
+ }
+}

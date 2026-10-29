@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: one bar, 10% red sport-specific, 90% everything else */
+      #pc-lab { position: absolute; left: 90px; top: 1116px; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+      #pc-track { position: absolute; left: 90px; top: 1166px; width: 900px; height: 44px; background: rgba(20, 18, 19, 0.45); border: 2px solid rgba(255, 255, 255, 0.85); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); overflow: hidden; }
+      #pc-red { position: absolute; left: 0; top: 0; bottom: 0; width: 90px; background: var(--red); }
+      #pc-rest { position: absolute; left: 90px; top: 0; bottom: 0; right: 0; background: rgba(255, 255, 255, 0.85); }
+      #pc-big { position: absolute; left: 86px; top: 1232px; font-size: 72px; color: var(--red); text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      #pc-a { position: absolute; left: 260px; top: 1262px; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+      #pc-b { position: absolute; right: 90px; top: 1262px; font-size: 24px; text-align: right; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+    </style>
+  </head>
+  <body>
+    <div id="pct" class="stage" data-composition-id="pct" data-start="0" data-duration="4.7" data-width="1080" data-height="1920">
+      <div id="pct-g" class="clip" data-start="0" data-duration="4.7" data-track-index="0">
+        <div id="pc-lab" class="kicker">Your gym exercises</div>
+        <div id="pc-track"><div id="pc-red"></div><div id="pc-rest"></div></div>
+        <div id="pc-big" class="display">10%</div>
+        <div id="pc-a" class="kicker">Sport-specific</div>
+        <div id="pc-b" class="kicker">90% everything else</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"ten":0.6,"sport":3.8,"out":4.4}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(["#pc-red", "#pc-rest"], { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(["#pc-big", "#pc-a", "#pc-b"], { opacity: 0 });
+      tl.fromTo("#pc-lab", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.05);
+      tl.fromTo("#pc-track", { opacity: 0, scaleX: 0.85, transformOrigin: "left center" }, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, 0);
+      // "only about 10%"
+      tl.to("#pc-red", { scaleX: 1, duration: 0.4, ease: "power2.out" }, C.ten);
+      tl.fromTo("#pc-big", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C.ten + 0.1);
+      tl.fromTo("#pc-a", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, C.sport);
+      // the rest fills right after
+      tl.to("#pc-rest", { scaleX: 1, duration: 0.6, ease: "power2.out" }, C.sport + 0.2);
+      tl.fromTo("#pc-b", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, C.sport + 0.5);
+      tl.to(["#pc-lab", "#pc-big", "#pc-a", "#pc-b"], { opacity: 0, duration: 0.15, ease: "power2.in" }, C.out);
+      tl.to("#pc-track", { opacity: 0, scaleX: 0.9, duration: 0.2, ease: "power2.in" }, C.out + 0.04);
+      window.__timelines["pct"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

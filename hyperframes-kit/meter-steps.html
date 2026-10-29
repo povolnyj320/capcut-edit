@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lactate meter, lower band */
+      #m-lab { position: absolute; left: 90px; top: 1116px; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+      #m-track { position: absolute; left: 90px; top: 1166px; width: 900px; height: 44px; background: rgba(20, 18, 19, 0.45); border: 2px solid rgba(255, 255, 255, 0.85); overflow: hidden; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); }
+      #m-fill { position: absolute; inset: 0; background: var(--red); }
+      #m-ticks { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 60px, rgba(20, 18, 19, 0.7) 60px 63px); }
+      #m-tag { position: absolute; right: 90px; top: 1248px; background: var(--red); padding: 6px 16px 4px; font-size: 40px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); }
+      #m-sub { position: absolute; left: 90px; top: 1256px; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+    </style>
+  </head>
+  <body>
+    <div id="lactate" class="stage" data-composition-id="lactate" data-start="0" data-duration="4.9" data-width="1080" data-height="1920">
+      <div id="m-g" class="clip" data-start="0" data-duration="4.9" data-track-index="0">
+        <div id="m-lab" class="kicker">Lactate</div>
+        <div id="m-track"><div id="m-fill"></div><div id="m-ticks"></div></div>
+        <div id="m-tag" class="display">Arm pump</div>
+        <div id="m-sub" class="kicker">Buildup</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"feel":0.6,"pump":1.6,"build":3.6,"out":4.6}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      gsap.set("#m-fill", { scaleX: 0.08, transformOrigin: "left center" });
+      gsap.set(["#m-tag", "#m-sub"], { opacity: 0 });
+      tl.fromTo("#m-lab", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.05);
+      tl.fromTo("#m-track", { opacity: 0, scaleX: 0.85, transformOrigin: "left center" }, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, 0);
+      tl.to("#m-fill", { scaleX: 0.35, duration: 0.5, ease: "power2.out" }, C.feel);
+      tl.to("#m-fill", { scaleX: 0.7, duration: 0.5, ease: "power2.out" }, C.pump);
+      tl.fromTo("#m-tag", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C.pump);
+      tl.to("#m-fill", { scaleX: 1, duration: 0.55, ease: "power2.out" }, C.build);
+      tl.fromTo("#m-sub", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, C.build);
+      tl.to(["#m-lab", "#m-sub", "#m-tag"], { opacity: 0, duration: 0.15, ease: "power2.in" }, C.out);
+      tl.to("#m-track", { opacity: 0, scaleX: 0.9, transformOrigin: "left center", duration: 0.2, ease: "power2.in" }, C.out + 0.04);
+      window.__timelines["lactate"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

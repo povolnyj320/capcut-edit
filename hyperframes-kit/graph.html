@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* full-screen cutaway (opaque): training breaks you down, recovery brings you back above where you started.
+         The top 160-310 px stays clear for the pillar tracker drawn over it. */
+      html,
+      body {
+        background: #141213;
+      }
+      #gr-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 90px),
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 90px);
+      }
+      #gr-tag {
+        position: absolute;
+        left: 90px;
+        top: 372px;
+        background: var(--red);
+        padding: 8px 16px 6px;
+        font-size: 24px;
+      }
+      #gr-title {
+        position: absolute;
+        left: 86px;
+        top: 424px;
+        font-size: 76px;
+        white-space: nowrap;
+      }
+      #gr-chart {
+        position: absolute;
+        left: 90px;
+        top: 640px;
+        width: 900px;
+        height: 640px;
+      }
+      .ax {
+        position: absolute;
+        font-size: 22px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .note {
+        position: absolute;
+        font-size: 22px;
+        white-space: nowrap;
+      }
+      .note b {
+        display: block;
+        font-family: "ZY Starry", sans-serif;
+        font-weight: 400;
+        font-size: 34px;
+        text-transform: none;
+        letter-spacing: 0.01em;
+        line-height: 0.95;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="graph" class="stage" data-composition-id="graph" data-start="0" data-duration="4.7" data-width="1080" data-height="1920">
+      <div id="gr-g" class="clip" data-start="0" data-duration="4.7" data-track-index="0">
+        <div id="gr-bg"></div>
+        <div id="gr-tag" class="kicker">Pillar 05 · Recovery</div>
+        <div id="gr-title" class="display">When you get stronger</div>
+        <svg id="gr-chart" viewBox="0 0 900 640">
+          <line id="gr-yax" x1="4" y1="20" x2="4" y2="620" stroke="rgba(255,255,255,0.45)" stroke-width="4" />
+          <line id="gr-xax" x1="4" y1="620" x2="896" y2="620" stroke="rgba(255,255,255,0.45)" stroke-width="4" />
+          <line id="gr-base" x1="4" y1="330" x2="896" y2="330" stroke="rgba(255,255,255,0.55)" stroke-width="3" stroke-dasharray="14 12" />
+          <line id="gr-new" x1="560" y1="150" x2="896" y2="150" stroke="#ee2824" stroke-width="3" stroke-dasharray="14 12" />
+          <path id="gr-p1" d="M4 330 L170 330 C 250 330 290 520 380 520" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+          <path id="gr-p2" d="M380 520 C 470 520 520 150 640 150 C 720 150 790 172 896 176" fill="none" stroke="#ee2824" stroke-width="6" stroke-linecap="round" />
+          <circle id="gr-dot" cx="896" cy="176" r="14" fill="#ee2824" style="opacity:0" />
+        </svg>
+        <div class="ax kicker" style="left:108px;top:610px">Fitness</div>
+        <div class="ax kicker" style="left:860px;top:1290px">Time</div>
+        <div class="ax kicker" style="left:860px;top:938px">Start</div>
+        <div id="gr-n1" class="note kicker" style="left:250px;top:1180px">Training<b>You break down</b></div>
+        <div id="gr-n2" class="note kicker" style="left:560px;top:620px;color:#ffffff">Recovery<b style="color:#ee2824">Back stronger</b></div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"train":0.39,"recov":2.01,"recov_end":4.17,"out":4.4}/*END*/; // "don't get stronger", "you get stronger", end of "training"
+      const p1 = document.getElementById("gr-p1");
+      const p2 = document.getElementById("gr-p2");
+      const l1 = p1.getTotalLength();
+      const l2 = p2.getTotalLength();
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(p1, { strokeDasharray: l1, strokeDashoffset: l1, opacity: 0 });
+      gsap.set(p2, { strokeDasharray: l2, strokeDashoffset: l2, opacity: 0 });
+      gsap.set(["#gr-n1", "#gr-n2", "#gr-dot", "#gr-new"], { opacity: 0 });
+      tl.fromTo("#gr-title", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 0);
+      tl.fromTo("#gr-tag", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 0.06);
+      tl.fromTo(["#gr-yax", "#gr-xax", "#gr-base"], { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out", stagger: 0.05 }, 0.1);
+      // "you don't get stronger when you're training": the line drops
+      tl.set(p1, { opacity: 1 }, C.train);
+      tl.to(p1, { strokeDashoffset: 0, duration: Math.max(0.5, Math.min(1.2, C.recov - C.train - 0.2)), ease: "power1.inOut" }, C.train);
+      tl.fromTo("#gr-n1", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, C.train + 0.61);
+      // "you get stronger when you recover from your training": it climbs past where you started
+      tl.set(p2, { opacity: 1 }, C.recov);
+      tl.to(p2, { strokeDashoffset: 0, duration: Math.max(0.6, C.recov_end - C.recov), ease: "power2.inOut" }, C.recov);
+      tl.fromTo("#gr-n2", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, C.recov + 0.99);
+      tl.fromTo("#gr-new", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, C.recov_end - 0.27);
+      tl.fromTo("#gr-dot", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, C.recov_end);
+      window.__timelines["graph"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

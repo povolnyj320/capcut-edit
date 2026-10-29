@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: the five areas land one per word */
+      .ar { position: absolute; width: 280px; height: 80px; background: rgba(35, 31, 32, 0.55); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); display: flex; align-items: center; }
+      .ar .bar { width: 8px; height: 100%; background: var(--red); margin-right: 18px; }
+      .ar span { font-size: 40px; }
+      #ar-lab { position: absolute; left: 0; width: 1080px; top: 1320px; text-align: center; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+    </style>
+  </head>
+  <body>
+    <div id="five" class="stage" data-composition-id="five" data-start="0" data-duration="7.4" data-width="1080" data-height="1920">
+      <div id="five-g" class="clip" data-start="0" data-duration="7.4" data-track-index="0">
+        <div class="ar" id="ar0" style="left:90px; top:1120px"><div class="bar"></div><span class="display">Strength</span></div>
+        <div class="ar" id="ar1" style="left:400px; top:1120px"><div class="bar"></div><span class="display">Endurance</span></div>
+        <div class="ar" id="ar2" style="left:710px; top:1120px"><div class="bar"></div><span class="display">Mobility</span></div>
+        <div class="ar" id="ar3" style="left:245px; top:1220px"><div class="bar"></div><span class="display">Recovery</span></div>
+        <div class="ar" id="ar4" style="left:555px; top:1220px"><div class="bar"></div><span class="display">Nutrition</span></div>
+        <div id="ar-lab" class="kicker">Master all five</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"a0":0.1,"a1":0.8,"a2":1.5,"a3":2.0,"a4":2.5,"master":4.5,"out":7.1}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      [0, 1, 2, 3, 4].forEach(i => tl.fromTo(`#ar${i}`, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, C[`a${i}`]));
+      tl.fromTo("#ar-lab", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, C.master);
+      tl.to([".ar", "#ar-lab"], { opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, C.out);
+      window.__timelines["five"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

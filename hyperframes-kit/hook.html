@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* top band: tag + title; bottom band: five pillars rise on "five key training pillars" */
+      #hk-tag {
+        position: absolute;
+        left: 90px;
+        top: 196px;
+        background: var(--red);
+        padding: 8px 16px 6px;
+        font-size: 24px;
+      }
+      #hk-title {
+        position: absolute;
+        left: 86px;
+        top: 244px;
+        font-size: 80px;
+      }
+      #hk-rule {
+        position: absolute;
+        left: 90px;
+        top: 372px;
+        width: 420px;
+        height: 8px;
+        background: var(--red);
+      }
+      #hk-base {
+        position: absolute;
+        left: 150px;
+        top: 1326px;
+        width: 780px;
+        height: 6px;
+        background: var(--ink);
+      }
+      #hk-cols {
+        position: absolute;
+        left: 168px;
+        top: 1120px;
+        width: 744px;
+        height: 206px;
+        display: flex;
+        gap: 36px;
+        align-items: flex-end;
+      }
+      .col {
+        width: 120px;
+        height: 206px;
+        background: var(--red);
+        display: flex;
+        justify-content: center;
+        padding-top: 14px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      }
+      .col span {
+        font-size: 52px;
+        color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hook" class="stage" data-composition-id="hook" data-start="0" data-duration="4.37" data-width="1080" data-height="1920">
+      <div id="hk-g" class="clip" data-start="0" data-duration="4.37" data-track-index="0">
+        <div id="hk-tag" class="kicker">Motocross</div>
+        <div id="hk-title" class="display lift">5 training pillars</div>
+        <div id="hk-rule"></div>
+        <div id="hk-base"></div>
+        <div id="hk-cols">
+          <div class="col"><span class="display">1</span></div>
+          <div class="col"><span class="display">2</span></div>
+          <div class="col"><span class="display">3</span></div>
+          <div class="col"><span class="display">4</span></div>
+          <div class="col"><span class="display">5</span></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"five":2.43,"out":4.07}/*END*/; // seconds from this graphic's start; the builder fills these from the words
+      const tl = gsap.timeline({ paused: true });
+      // frame 0 already reads: tag and title on screen, settling in
+      tl.fromTo("#hk-title", { opacity: 0.85 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0);
+      tl.fromTo("#hk-tag", { x: -24 }, { x: 0, duration: 0.5, ease: "power2.out" }, 0);
+      tl.fromTo("#hk-rule", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.7, ease: "power2.out" }, 0.1);
+      // "five key training pillars": base line draws, then one pillar per beat
+      tl.fromTo("#hk-base", { scaleX: 0, transformOrigin: "center center" }, { scaleX: 1, duration: 0.4, ease: "power2.out" }, C.five - 0.18);
+      tl.fromTo(".col", { scaleY: 0, transformOrigin: "center bottom" }, { scaleY: 1, duration: 0.5, ease: "power2.out", stagger: 0.12 }, C.five);
+      tl.fromTo(".col span", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", stagger: 0.12 }, C.five + 0.17);
+      // out before the first pillar card lands
+      tl.to(["#hk-title", "#hk-tag"], { opacity: 0, duration: 0.2, ease: "power2.in" }, C.out + 0.01);
+      tl.to("#hk-rule", { scaleX: 0, transformOrigin: "right center", duration: 0.2, ease: "power2.in" }, C.out + 0.01);
+      tl.to(".col", { scaleY: 0, duration: 0.22, ease: "power2.in", stagger: 0.03 }, C.out - 0.02);
+      tl.to("#hk-base", { scaleX: 0, duration: 0.2, ease: "power2.in" }, C.out + 0.05);
+      window.__timelines["hook"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

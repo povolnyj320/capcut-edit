@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: the body, part by part, as they names it */
+      .st { position: absolute; width: 440px; height: 84px; background: rgba(35, 31, 32, 0.55); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); display: flex; align-items: center; }
+      .st .bar { width: 8px; height: 100%; background: var(--red); margin-right: 20px; }
+      .st .nm { font-size: 22px; white-space: nowrap; margin-right: 18px; }
+      .st .vl { font-size: 40px; color: #ffffff; }
+    </style>
+  </head>
+  <body>
+    <div id="status" class="stage" data-composition-id="status" data-start="0" data-duration="5.0" data-width="1080" data-height="1920">
+      <div id="status-g" class="clip" data-start="0" data-duration="5.0" data-track-index="0">
+        <div class="st" id="st0" style="left:90px; top:1130px"><div class="bar"></div><span class="kicker nm">Arms</span><span class="display vl">Pumped</span></div>
+        <div class="st" id="st1" style="left:550px; top:1130px"><div class="bar"></div><span class="kicker nm">Legs</span><span class="display vl">Burning</span></div>
+        <div class="st" id="st2" style="left:90px; top:1230px"><div class="bar"></div><span class="kicker nm">Lungs</span><span class="display vl">Screaming</span></div>
+        <div class="st" id="st3" style="left:550px; top:1230px"><div class="bar"></div><span class="kicker nm">Heart rate</span><span class="display vl">Maxed</span></div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"arms":0.1,"legs":1.0,"lungs":2.1,"heart":3.0,"out":4.7}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      ["arms", "legs", "lungs", "heart"].forEach((k, i) => tl.fromTo(`#st${i}`, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, C[k]));
+      tl.to(".st", { opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, C.out);
+      window.__timelines["status"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

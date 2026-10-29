@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* the 1-to-5 strip above the creator's cap; each segment lights as they names its pillar */
+      #tr-row {
+        position: absolute;
+        left: 90px;
+        top: 200px;
+        width: 900px;
+        display: flex;
+        gap: 15px;
+      }
+      .seg {
+        width: 168px;
+      }
+      .bar {
+        position: relative;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.28);
+        overflow: hidden;
+        box-shadow: none;
+      }
+      .fill {
+        position: absolute;
+        inset: 0;
+        background: var(--red);
+      }
+      .num {
+        margin-top: 12px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.5);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      }
+      .lab {
+        margin-top: 2px;
+        font-size: 20px;
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.5);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tracker" class="stage" data-composition-id="tracker" data-start="0" data-duration="45.06" data-width="1080" data-height="1920">
+      <div id="tr-g" class="clip" data-start="0" data-duration="45.06" data-track-index="0">
+        <div id="tr-row">
+          <div class="seg" id="tr-1"><div class="bar"><div class="fill"></div></div><div class="num mono">01</div><div class="lab kicker">Anaerobic</div></div>
+          <div class="seg" id="tr-2"><div class="bar"><div class="fill"></div></div><div class="num mono">02</div><div class="lab kicker">Aerobic</div></div>
+          <div class="seg" id="tr-3"><div class="bar"><div class="fill"></div></div><div class="num mono">03</div><div class="lab kicker">Strength</div></div>
+          <div class="seg" id="tr-4"><div class="bar"><div class="fill"></div></div><div class="num mono">04</div><div class="lab kicker">Mobility</div></div>
+          <div class="seg" id="tr-5"><div class="bar"><div class="fill"></div></div><div class="num mono">05</div><div class="lab kicker">Recovery</div></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // when they names each pillar ("first", "Number two", "third", "four", "fifth"), seconds from the tracker's start
+      const C = /*CUES*/{"p1":0.08,"p2":8.06,"p3":17.82,"p4":24.2,"p5":32.84,"out":44.76}/*END*/;
+      const ON = [C.p1, C.p2, C.p3, C.p4, C.p5];
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(".fill", { scaleX: 0, transformOrigin: "left center" });
+      tl.fromTo(".seg", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.05 }, 0);
+      ON.forEach((t, i) => {
+        const seg = `#tr-${i + 1}`;
+        tl.fromTo(`${seg} .fill`, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, t);
+        tl.to(`${seg} .num, ${seg} .lab`, { color: "#ffffff", duration: 0.2, ease: "power2.out" }, t);
+        if (i > 0) {
+          // the pillar before stays filled but drops to white, so red always marks "now"
+          const prev = `#tr-${i}`;
+          tl.to(`${prev} .fill`, { backgroundColor: "rgba(255,255,255,0.9)", duration: 0.3, ease: "power2.inOut" }, t);
+          tl.to(`${prev} .num, ${prev} .lab`, { color: "rgba(255,255,255,0.78)", duration: 0.3 }, t);
+        }
+      });
+      tl.to(".seg", { opacity: 0, y: -12, duration: 0.2, ease: "power2.in", stagger: 0.03 }, C.out);
+      window.__timelines["tracker"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

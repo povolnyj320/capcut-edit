@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* sprint power meter: spikes on "high sprint power", then again and again on "repeatedly" */
+      #sp-lab {
+        position: absolute;
+        left: 90px;
+        top: 1116px;
+        font-size: 24px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      }
+      #sp-track {
+        position: absolute;
+        left: 90px;
+        top: 1166px;
+        width: 900px;
+        height: 44px;
+        background: rgba(20, 18, 19, 0.45);
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        overflow: hidden;
+      }
+      #sp-fill {
+        position: absolute;
+        inset: 0;
+        background: var(--red);
+      }
+      #sp-ticks {
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(90deg, transparent 0 60px, rgba(20, 18, 19, 0.7) 60px 63px);
+      }
+      #sp-max {
+        position: absolute;
+        right: 90px;
+        top: 1248px;
+        background: var(--red);
+        padding: 6px 16px 4px;
+        font-size: 40px;
+      }
+      #sp-rep {
+        position: absolute;
+        left: 90px;
+        top: 1250px;
+        font-size: 24px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      }
+      #sp-count {
+        position: absolute;
+        left: 560px;
+        top: 1236px;
+        width: 120px;
+        height: 70px;
+      }
+      .x {
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 40px;
+        color: var(--red);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sprint" class="stage" data-composition-id="sprint" data-start="0" data-duration="5.53" data-width="1080" data-height="1920">
+      <div id="sp-g" class="clip" data-start="0" data-duration="5.53" data-track-index="0">
+        <div id="sp-lab" class="kicker">Sprint power</div>
+        <div id="sp-track"><div id="sp-fill"></div><div id="sp-ticks"></div></div>
+        <div id="sp-max" class="display">Max</div>
+        <div id="sp-rep" class="kicker">Again and again</div>
+        <div id="sp-count">
+          <div class="x display" id="sp-x2">x2</div>
+          <div class="x display" id="sp-x3">x3</div>
+          <div class="x display" id="sp-x4">x4</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"high":1.27,"rep":3.14,"out":5.23}/*END*/; // "high sprint power", "Repeatedly"
+      const tl = gsap.timeline({ paused: true });
+      gsap.set("#sp-fill", { scaleX: 0.06, transformOrigin: "left center" });
+      gsap.set(["#sp-max", "#sp-rep", ".x"], { opacity: 0 });
+      tl.fromTo("#sp-lab", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.05);
+      tl.fromTo("#sp-track", { opacity: 0, scaleX: 0.85, transformOrigin: "left center" }, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, 0);
+      // "high sprint power": all the way to max
+      tl.to("#sp-fill", { scaleX: 1, duration: 0.55, ease: "power2.out" }, C.high);
+      tl.fromTo("#sp-max", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, C.high + 0.48);
+      // "repeatedly": drop and spike, three more times, counting up
+      tl.to("#sp-max", { opacity: 0, duration: 0.12, ease: "power2.in" }, C.rep - 0.04);
+      tl.fromTo("#sp-rep", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, C.rep);
+      [C.rep + 0.04, C.rep + 0.58, C.rep + 1.12].forEach((t, i) => {
+        tl.to("#sp-fill", { scaleX: 0.08, duration: 0.14, ease: "power2.in" }, t);
+        tl.to("#sp-fill", { scaleX: 1, duration: 0.3, ease: "power2.out" }, t + 0.16);
+        if (i > 0) tl.set(`#sp-x${i + 1}`, { opacity: 0 }, t + 0.16);
+        tl.fromTo(`#sp-x${i + 2}`, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, t + 0.16);
+      });
+      tl.to(["#sp-lab", "#sp-rep", "#sp-x4"], { opacity: 0, duration: 0.15, ease: "power2.in" }, C.out);
+      tl.to("#sp-track", { opacity: 0, scaleX: 0.9, duration: 0.2, ease: "power2.in" }, C.out + 0.04);
+      window.__timelines["sprint"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

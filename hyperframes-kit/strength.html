@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* "BIKE ≠ GYM": the not-equal slams in on "but not the same kind of strength" */
+      #st-k {
+        position: absolute;
+        left: 0;
+        top: 1094px;
+        width: 1080px;
+        text-align: center;
+        font-size: 22px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      }
+      #st-row {
+        position: absolute;
+        left: 0;
+        top: 1132px;
+        width: 1080px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 34px;
+      }
+      .st-word {
+        font-size: 104px;
+      }
+      #st-ne {
+        font-family: "Inter", sans-serif;
+        font-weight: 300;
+        font-size: 104px;
+        color: var(--red);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="strength" class="stage" data-composition-id="strength" data-start="0" data-duration="5.03" data-width="1080" data-height="1920">
+      <div id="st-g" class="clip" data-start="0" data-duration="5.03" data-track-index="0">
+        <div id="st-k" class="kicker">Not the same strength</div>
+        <div id="st-row">
+          <div id="st-bike" class="st-word display lift">Bike</div>
+          <div id="st-ne" class="display lift">&ne;</div>
+          <div id="st-gym" class="st-word display lift">Gym</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"bike":1.2,"ne":2.76,"out":4.73}/*END*/; // "strength riding your dirt bike", "but not the same"
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(["#st-k", "#st-bike", "#st-ne", "#st-gym"], { opacity: 0 });
+      tl.fromTo("#st-bike", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, C.bike);
+      // "but not the same kind": slam, with a small kick through the row
+      tl.fromTo("#st-ne", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, C.ne);
+      tl.fromTo("#st-k", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, C.ne + 0.04);
+      tl.fromTo("#st-gym", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, C.ne + 0.19);
+      tl.to(["#st-bike", "#st-ne", "#st-gym", "#st-k"], { opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, C.out);
+      window.__timelines["strength"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

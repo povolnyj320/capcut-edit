@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.DS_Store
+.claude/settings.local.json
+
+# your own CapCut templates, saved by `capcut.py style` (paths into your CapCut cache)
+style.json
+
+# fonts are licensed; copy the one you use from CapCut's cache (see README)
+hyperframes-kit/assets/fonts/*
+
+# render output and generated files
+hyperframes-kit/out/
+hyperframes-kit/_gen_*.html
+hyperframes-kit/.hyperframes/
+hyperframes-kit/node_modules/

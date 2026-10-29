@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* name tag on "like Jett Lawrence" */
+      #jt-top {
+        position: absolute;
+        left: 90px;
+        top: 1150px;
+        background: var(--red);
+        padding: 12px 30px 6px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      }
+      #jt-name {
+        font-size: 64px;
+        white-space: nowrap;
+      }
+      #jt-sub {
+        position: absolute;
+        left: 90px;
+        top: 1276px;
+        background: var(--dark);
+        padding: 10px 22px;
+        font-size: 22px;
+        letter-spacing: 0.08em;
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="jett" class="stage" data-composition-id="jett" data-start="0" data-duration="2.85" data-width="1080" data-height="1920">
+      <div id="jt-g" class="clip" data-start="0" data-duration="2.85" data-track-index="0">
+        <div id="jt-top"><div id="jt-name" class="display">Jett Lawrence</div></div>
+        <div id="jt-sub" class="mono">Pro motocross racer</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"out":2.5}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#jt-top", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, 0.02);
+      tl.fromTo("#jt-name", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.18);
+      tl.fromTo("#jt-sub", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.4, ease: "power2.out" }, 0.22);
+      tl.to("#jt-name", { opacity: 0, duration: 0.14, ease: "power2.in" }, C.out);
+      tl.to(["#jt-top", "#jt-sub"], { scaleX: 0, transformOrigin: "right center", duration: 0.22, ease: "power2.in", stagger: 0.04 }, C.out + 0.06);
+      window.__timelines["jett"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

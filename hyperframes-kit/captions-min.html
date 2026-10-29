@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face {
+        font-family: "ZY Starry";
+        src: url("assets/fonts/ZY-Starry.ttf");
+      }
+      /* minimal captions: ZY Starry, white, sentence case, one group at a time, a soft rise in and fade out.
+         The key word is red and static. Nothing behind the text. */
+      #cap-layer {
+        position: absolute;
+        inset: 0;
+      }
+      .cap-group {
+        position: absolute;
+        left: 0;
+        top: 960px;
+        width: 1080px;
+        padding: 0 90px;
+        text-align: center;
+        white-space: nowrap;
+        font-family: "ZY Starry", sans-serif;
+        line-height: 1.1;
+        color: #ffffff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+        overflow: visible;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .cap-word.key {
+        color: #ee2824;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="captionsmin" class="stage" data-composition-id="captionsmin" data-start="0" data-duration="51.2" data-width="1080" data-height="1920">
+      <div id="cap-g" class="clip" data-start="0" data-duration="51.2" data-track-index="0" data-track-kind="captions">
+        <div id="cap-layer"></div>
+      </div>
+    </div>
+    <script>
+      const WORDS = /*WORDS*/[];
+      const GROUPS = /*GROUPS*/[];
+      const C = /*CUES*/{"out":0}/*END*/;
+      const layer = document.getElementById("cap-layer");
+      GROUPS.forEach((g, gi) => {
+        const grp = document.createElement("div");
+        grp.className = "cap-group";
+        grp.id = "cg-" + gi;
+        const text = g.w.map((i) => WORDS[i].text).join(" ");
+        // ZY Starry runs about 0.6 em a letter: fit inside 880 px, 64 px at most
+        grp.style.fontSize = Math.round(Math.min(64, 880 / (text.length * 0.6))) + "px";
+        g.w.forEach((i, k) => {
+          const w = WORDS[i];
+          const el = document.createElement("span");
+          el.className = "cap-word" + (w.key ? " key" : "");
+          el.textContent = (k ? " " : "") + w.text;
+          grp.appendChild(el);
+        });
+        layer.appendChild(grp);
+      });
+      const tl = gsap.timeline({ paused: true });
+      GROUPS.forEach((g, gi) => {
+        const grp = "#cg-" + gi;
+        if (g.start <= 0) gsap.set(grp, { visibility: "visible", opacity: 1 });
+        else {
+          tl.set(grp, { visibility: "visible" }, g.start);
+          tl.fromTo(grp, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out" }, g.start);
+        }
+        tl.to(grp, { opacity: 0, duration: 0.15, ease: "power2.in" }, g.end - 0.15);
+        tl.set(grp, { opacity: 0, visibility: "hidden" }, g.end);
+      });
+      window.__timelines["captionsmin"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

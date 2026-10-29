@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* comment box that types BLUEPRINT on the word, then posts */
+      #ct-k {
+        position: absolute;
+        left: 90px;
+        top: 1080px;
+        background: var(--red);
+        padding: 8px 16px 6px;
+        font-size: 22px;
+      }
+      #ct-bar {
+        position: absolute;
+        left: 90px;
+        top: 1140px;
+        width: 900px;
+        height: 124px;
+        background: #ffffff;
+        border-radius: 62px;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      }
+      #ct-av {
+        position: absolute;
+        left: 112px;
+        top: 1162px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        letter-spacing: 0.04em;
+      }
+      #ct-ph {
+        position: absolute;
+        left: 222px;
+        top: 1180px;
+        font-family: "Inter", sans-serif;
+        font-size: 36px;
+        color: #8e8e8e;
+      }
+      #ct-typed {
+        position: absolute;
+        left: 222px;
+        top: 1176px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+      }
+      #ct-clip {
+        width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 40px;
+        color: #231f20;
+      }
+      #ct-caret {
+        width: 4px;
+        height: 46px;
+        margin-left: 4px;
+        background: #231f20;
+      }
+      #ct-post {
+        position: absolute;
+        left: 852px;
+        top: 1182px;
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 34px;
+        color: #0095f6;
+      }
+      #ct-heart {
+        position: absolute;
+        left: 872px;
+        top: 1036px;
+        width: 100px;
+        height: 92px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cta" class="stage" data-composition-id="cta" data-start="0" data-duration="3.5" data-width="1080" data-height="1920">
+      <div id="ct-g" class="clip" data-start="0" data-duration="3.5" data-track-index="0">
+        <div id="ct-k" class="kicker">Comment for the full plan</div>
+        <div id="ct-bar"></div>
+        <div id="ct-av" class="kicker">HP</div>
+        <div id="ct-ph">Add a comment…</div>
+        <div id="ct-typed"><div id="ct-clip" class="mono">BLUEPRINT</div><div id="ct-caret"></div></div>
+        <div id="ct-post">Post</div>
+        <svg id="ct-heart" viewBox="0 0 100 92"><path d="M50 88 C 18 64 2 46 2 27 C 2 12 14 2 28 2 C 38 2 46 8 50 16 C 54 8 62 2 72 2 C 86 2 98 12 98 27 C 98 46 82 64 50 88 Z" fill="#ee2824" /></svg>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"type":0.54,"out":3.2}/*END*/; // "blueprint"
+      const CH = 27.5; // Inter 600 at 40 px, caps: about one character's advance
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(["#ct-caret", "#ct-heart"], { opacity: 0 });
+      gsap.set("#ct-post", { opacity: 0.35 });
+      tl.fromTo("#ct-bar", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0);
+      tl.fromTo(["#ct-av", "#ct-ph"], { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.12);
+      tl.fromTo("#ct-k", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 0.1);
+      // "blueprint": type it, one letter every 60 ms
+      tl.set("#ct-ph", { opacity: 0 }, C.type);
+      tl.set("#ct-caret", { opacity: 1 }, C.type);
+      for (let i = 1; i <= 9; i++) tl.set("#ct-clip", { width: CH * i }, C.type + i * 0.06);
+      tl.to("#ct-post", { opacity: 1, duration: 0.15 }, C.type + 0.56);
+      tl.to("#ct-caret", { opacity: 0, duration: 0.06, repeat: 3, yoyo: true }, C.type + 0.6);
+      // tap Post, heart pops
+            tl.fromTo("#ct-heart", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C.type + 1.18);
+      tl.to(["#ct-k", "#ct-bar", "#ct-av", "#ct-typed", "#ct-post", "#ct-heart"], { opacity: 0, y: 14, duration: 0.2, ease: "power2.in", stagger: 0.02 }, C.out);
+      window.__timelines["cta"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

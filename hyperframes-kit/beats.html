@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: a heartbeat trace; the time between beats is never quite the same */
+      #bt-lab { position: absolute; left: 90px; top: 1100px; font-size: 24px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+      #bt-svg { position: absolute; left: 0; top: 1140px; width: 1080px; height: 130px; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45)); }
+      .gap { position: absolute; top: 1272px; width: 140px; text-align: center; font-size: 24px; color: #ffffff; background: rgba(35, 31, 32, 0.6); padding: 6px 0 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); }
+    </style>
+  </head>
+  <body>
+    <div id="beats" class="stage" data-composition-id="beats" data-start="0" data-duration="4.8" data-width="1080" data-height="1920">
+      <div id="beats-g" class="clip" data-start="0" data-duration="4.8" data-track-index="0">
+        <div id="bt-lab" class="kicker">Time between heartbeats</div>
+        <svg id="bt-svg" viewBox="0 0 1080 130">
+          <path id="bt-line" d="M40 60 L110 60 L122 52 L132 60 L144 60 L150 6 L158 84 L166 60 L360 60 L372 52 L382 60 L394 60 L400 6 L408 84 L416 60 L650 60 L662 52 L672 60 L684 60 L690 6 L698 84 L706 60 L880 60 L892 52 L902 60 L914 60 L920 6 L928 84 L936 60 L1040 60" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" />
+          <path class="br" d="M154 104 L154 116 L396 116 L396 104" fill="none" stroke="#ee2824" stroke-width="4" />
+          <path class="br" d="M404 104 L404 116 L686 116 L686 104" fill="none" stroke="#ee2824" stroke-width="4" />
+          <path class="br" d="M694 104 L694 116 L916 116 L916 104" fill="none" stroke="#ee2824" stroke-width="4" />
+        </svg>
+        <div class="gap kicker" style="left:205px">0.83 s</div>
+        <div class="gap kicker" style="left:475px">0.97 s</div>
+        <div class="gap kicker" style="left:735px">0.77 s</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"var":1.8,"out":4.5}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      const ln = document.getElementById("bt-line"), L = ln.getTotalLength();
+      gsap.set(ln, { strokeDasharray: L, strokeDashoffset: L });
+      gsap.set([".br", ".gap"], { opacity: 0 });
+      tl.fromTo("#bt-lab", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.05);
+      tl.to(ln, { strokeDashoffset: 0, duration: 1.4, ease: "none" }, 0.05);
+      // "the variation in time": each gap gets its own number
+      tl.to(".br", { opacity: 1, duration: 0.3, ease: "power2.out", stagger: 0.18 }, C.var);
+      tl.fromTo(".gap", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.18 }, C.var + 0.05);
+      tl.to(["#bt-lab", "#bt-svg", ".gap"], { opacity: 0, duration: 0.2, ease: "power2.in" }, C.out);
+      window.__timelines["beats"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

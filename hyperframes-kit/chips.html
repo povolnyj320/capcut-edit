@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* lower band: the four big lifts land one per word */
+      .lf { position: absolute; width: 440px; height: 84px; background: rgba(35, 31, 32, 0.55); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22); display: flex; align-items: center; }
+      .lf .bar { width: 8px; height: 100%; background: var(--red); margin-right: 24px; }
+      .lf span { font-size: 48px; }
+    </style>
+  </head>
+  <body>
+    <div id="lifts" class="stage" data-composition-id="lifts" data-start="0" data-duration="2.9" data-width="1080" data-height="1920">
+      <div id="lifts-g" class="clip" data-start="0" data-duration="2.9" data-track-index="0">
+        <div class="lf" id="lf0" style="left:90px; top:1130px"><div class="bar"></div><span class="display">Squats</span></div>
+        <div class="lf" id="lf1" style="left:550px; top:1130px"><div class="bar"></div><span class="display">Deadlifts</span></div>
+        <div class="lf" id="lf2" style="left:90px; top:1230px"><div class="bar"></div><span class="display">Presses</span></div>
+        <div class="lf" id="lf3" style="left:550px; top:1230px"><div class="bar"></div><span class="display">Pulls</span></div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"sq":0.4,"dl":0.9,"pr":1.5,"pu":2.1,"out":2.6}/*END*/;
+      const tl = gsap.timeline({ paused: true });
+      ["sq", "dl", "pr", "pu"].forEach((k, i) => tl.fromTo(`#lf${i}`, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, C[k]));
+      tl.to(".lf", { opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, C.out);
+      window.__timelines["lifts"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

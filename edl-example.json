@@ -1,0 +1,25 @@
+{
+  "project": "Reel 1101",
+  "words": "~/Movies/capcut-edit-work/Reel 1101/clip.words.json",
+  "keep": [[0, 12], [17, 32], [51, 57]],
+  "zoom": [1.0, 1.15],
+  "volume": 1.4,
+  "accent": "#ee2824",
+  "fix": {"Jet": "Jett"},
+  "key": [6, 22],
+  "push": [51],
+  "broll": [
+    {"media": "~/Movies/b-roll/ride.mp4", "at_word": 0, "src": 2.0},
+    {"media": "~/Movies/b-roll/gym.mp4", "at_word": 20, "src": 4.5}
+  ],
+  "captions": true,
+  "graphics_dir": "~/Movies/capcut-edit-work/graphics/Reel 1101",
+  "graphics": [
+    {"html": "card.html", "name": "card1", "at_word": 17, "until_word": 24, "cues": {"reveal": 22}, "lane": 2,
+     "vars": {"num": "01", "kicker": "Step 01", "name": "Warm up"}}
+  ],
+  "sfx": [
+    {"path": "~/Movies/sfx/sweep.wav", "at_word": 17, "volume": 0.4}
+  ],
+  "music": {"path": "~/Movies/music/bed.mp3", "volume": 0.18, "src": 0}
+}

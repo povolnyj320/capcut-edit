@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/wb.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face {
+        font-family: "ZY Starry";
+        src: url("assets/fonts/ZY-Starry.ttf");
+      }
+      /* Blueprint CTA, merged style (Oct 29): an off-white comment card in the lower band over the creator's face.
+         BLUEPRINT types in on the word in ZY Starry red, the send arrow fires, a line heart lands. Transparent page. */
+      #cc-card {
+        position: absolute;
+        left: 90px;
+        top: 1110px;
+        width: 900px;
+        height: 210px;
+        border-radius: 32px;
+        background: #f3f3f3;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      }
+      #cc-label {
+        position: absolute;
+        left: 130px;
+        top: 1140px;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 24px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #9a9a9a;
+      }
+      #cc-av {
+        position: absolute;
+        left: 130px;
+        top: 1196px;
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: #231f20;
+        color: #f3f3f3;
+        font-family: "ZY Starry", sans-serif;
+        font-size: 32px;
+        line-height: 84px;
+        text-align: center;
+      }
+      #cc-field {
+        position: absolute;
+        left: 236px;
+        top: 1196px;
+        width: 714px;
+        height: 84px;
+        border-radius: 42px;
+        border: 3px solid #dcdcdc;
+        background: #ffffff;
+      }
+      #cc-ph {
+        position: absolute;
+        left: 270px;
+        top: 1220px;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        font-size: 34px;
+        line-height: 40px;
+        color: #a0a0a0;
+      }
+      #cc-typed {
+        position: absolute;
+        left: 270px;
+        top: 1210px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        font-family: "ZY Starry", sans-serif;
+        font-size: 46px;
+        color: #ee2824;
+      }
+      #cc-caret {
+        width: 4px;
+        height: 44px;
+        margin-left: 6px;
+        background: #231f20;
+      }
+      #cc-send {
+        position: absolute;
+        left: 872px;
+        top: 1210px;
+        width: 56px;
+        height: 56px;
+      }
+      #cc-send svg,
+      #cc-heart svg {
+        width: 100%;
+        height: 100%;
+      }
+      #cc-heart {
+        position: absolute;
+        left: 880px;
+        top: 1010px;
+        width: 84px;
+        height: 84px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ctacomment" class="stage" data-composition-id="ctacomment" data-start="0" data-duration="3.3" data-width="1080" data-height="1920">
+      <div id="cc-g" class="clip" data-start="0" data-duration="3.3" data-track-index="0">
+        <div id="cc-card"></div>
+        <div id="cc-label">Comment for the full plan</div>
+        <div id="cc-av">HP</div>
+        <div id="cc-field"></div>
+        <div id="cc-ph">Add a comment…</div>
+        <div id="cc-typed"></div>
+        <div id="cc-send"></div>
+        <div id="cc-heart"></div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"type":0.35,"out":3.0}/*END*/; // "type" = the word Blueprint
+      const WORD = "BLUEPRINT";
+      const typed = document.getElementById("cc-typed");
+      [...WORD].forEach((ch) => {
+        const sp = document.createElement("span");
+        sp.className = "ch";
+        sp.textContent = ch;
+        typed.appendChild(sp);
+      });
+      const caret = document.createElement("div");
+      caret.id = "cc-caret";
+      typed.appendChild(caret);
+      document.getElementById("cc-send").innerHTML = WB.iconSvg("send");
+      document.getElementById("cc-heart").innerHTML = WB.iconSvg("heart", "red");
+      const all = ["#cc-card", "#cc-label", "#cc-av", "#cc-field", "#cc-ph", "#cc-typed", "#cc-send", "#cc-heart"];
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(".ch", { display: "none" }); // a letter takes space only once typed, so the caret follows
+      gsap.set(["#cc-caret", "#cc-heart"], { opacity: 0 });
+      gsap.set("#cc-send", { opacity: 0.3 });
+      // the card rises in with "Comment"
+      tl.fromTo(["#cc-card", "#cc-field"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0);
+      tl.fromTo(["#cc-label", "#cc-av"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.06 }, 0.1);
+      // the placeholder shows only if there's time before "Blueprint", and is gone before the first letter
+      gsap.set("#cc-ph", { opacity: 0 });
+      if (C.type > 0.35) {
+        tl.to("#cc-ph", { opacity: 1, duration: Math.min(0.2, C.type - 0.25), ease: "power2.out" }, 0.1);
+        tl.set("#cc-ph", { opacity: 0 }, C.type);
+      }
+      // "Blueprint": BLUEPRINT types in, a letter every 55 ms
+      tl.set("#cc-caret", { opacity: 1 }, C.type);
+      document.querySelectorAll(".ch").forEach((c, i) => tl.set(c, { display: "inline" }, C.type + 0.05 + i * 0.055));
+      const done = C.type + 0.05 + WORD.length * 0.055;
+      tl.to("#cc-send", { opacity: 1, duration: 0.2, ease: "power2.out" }, done);
+      tl.to("#cc-caret", { opacity: 0, duration: 0.2, ease: "power2.in" }, done + 0.25);
+      // send: the arrow fires off to the right, the heart lands (pop SFX at type + 1.18). When the reel
+      // ends sooner, both move up so the heart still shows for 0.3 s (the pop's offset then needs to match)
+      const heartT = Math.min(C.type + 1.18, C.out - 0.3), sendT = Math.max(done + 0.05, Math.min(C.type + 0.85, heartT - 0.3));
+      tl.to("#cc-send", { x: 40, y: -20, opacity: 0, duration: 0.35, ease: "power2.in" }, sendT);
+      tl.fromTo("#cc-heart", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, heartT);
+      tl.to(all, { opacity: 0, duration: 0.25, ease: "power2.in" }, C.out);
+      window.__timelines["ctacomment"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

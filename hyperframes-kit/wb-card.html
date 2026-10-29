@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/wb.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face {
+        font-family: "ZY Starry";
+        src: url("assets/fonts/ZY-Starry.ttf");
+      }
+      /* Merged-style overlay card (the creator, Oct 29: "I'm also ok with you adding visuals over B-roll and clips of me
+         talking"): the whiteboard's off-white card in the lower band, under the captions. Its content changes on
+         each "scenes" entry ({at, icon, big, label}), so it keeps moving while it's up. Transparent page. */
+      #wc-card {
+        position: absolute;
+        left: 90px;
+        top: 1110px;
+        width: 900px;
+        height: 200px;
+        border-radius: 32px;
+        background: #f3f3f3;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      }
+      .wc-in {
+        position: absolute;
+        left: 90px;
+        top: 1110px;
+        width: 900px;
+        height: 200px;
+      }
+      .wc-icon {
+        position: absolute;
+        left: 40px;
+        top: 40px;
+        width: 120px;
+        height: 120px;
+      }
+      .wc-big {
+        position: absolute;
+        top: 26px;
+        font-family: "ZY Starry", sans-serif;
+        font-size: 84px;
+        line-height: 1.1;
+        color: #231f20;
+        white-space: nowrap;
+      }
+      .wc-label {
+        position: absolute;
+        top: 128px;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        font-weight: 600;
+        font-size: 26px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #9a9a9a;
+        white-space: nowrap;
+      }
+      .r {
+        color: #ee2824;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wbcard" class="stage" data-composition-id="wbcard" data-start="0" data-duration="4" data-width="1080" data-height="1920">
+      <div id="wc-g" class="clip" data-start="0" data-duration="4" data-track-index="0">
+        <div id="wc-card"></div>
+      </div>
+    </div>
+    <script>
+      const SCENES = /*SCENES*/[];
+      const C = /*CUES*/{"out":3.7}/*END*/;
+      const root = document.getElementById("wc-g");
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#wc-card", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0);
+      let prev = null;
+      SCENES.forEach((s, i) => {
+        const box = document.createElement("div");
+        box.className = "wc-in";
+        const x = s.icon ? 190 : 50;
+        box.innerHTML = (s.icon ? `<div class="wc-icon">${WB.iconSvg(s.icon, s.color)}</div>` : "") +
+          `<div class="wc-big" style="left:${x}px${s.label ? "" : ";top:52px"}">${WB.rich(s.big || "")}</div>` +
+          (s.label ? `<div class="wc-label" style="left:${x + 4}px">${WB.rich(s.label)}</div>` : "");
+        root.appendChild(box);
+        const t = Math.max(typeof s.at === "number" ? s.at : 0, i ? 0 : 0.1);
+        if (prev) tl.to(prev, { opacity: 0, y: -8, duration: 0.15, ease: "power2.in" }, t - 0.15);
+        tl.fromTo(box, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t);
+        prev = box;
+      });
+      tl.to(["#wc-card", ".wc-in"], { opacity: 0, duration: 0.25, ease: "power2.in" }, C.out);
+      window.__timelines["wbcard"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

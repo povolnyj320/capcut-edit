@@ -1,0 +1,335 @@
+{
+ "project": "1028 Recovery Merged",
+ "words": "~/Movies/capcut-edit-work/1028 Recovery Merged/0139.words.json",
+ "media": "~/Movies/capcut-edit-work/1028 Recovery Merged/media/DJI_20260319112138_0139_D.MP4",
+ "keep": [
+  [
+   9,
+   19
+  ],
+  [
+   21,
+   33
+  ],
+  [
+   49,
+   59
+  ],
+  [
+   95,
+   109
+  ],
+  [
+   110,
+   113
+  ],
+  [
+   122,
+   130
+  ],
+  [
+   154,
+   163
+  ],
+  [
+   164,
+   177
+  ],
+  [
+   178,
+   191
+  ],
+  [
+   192,
+   208
+  ],
+  [
+   209,
+   223
+  ]
+ ],
+ "zoom": [
+  1.15
+ ],
+ "volume": 1.4,
+ "captions": false,
+ "fix": {
+  "Modo": "moto"
+ },
+ "key": [
+  14,
+  162,
+  205,
+  210
+ ],
+ "push": [
+  205,
+  210
+ ],
+ "broll": [
+  {
+   "media": "~/Desktop/Clips/B roll/Alcavi B Roll/It’s Daytona week 💪🏼🏁!!.mp4",
+   "at": 0,
+   "dur": 4.0,
+   "src": 2.4
+  }
+ ],
+ "graphics_dir": "~/Movies/capcut-edit-work/graphics/1028 Recovery Merged",
+ "graphics": [
+  {
+   "html": "whiteboard.html",
+   "name": "wb1",
+   "format": "mp4",
+   "lane": -1,
+   "at_word": 21,
+   "until_word": 154,
+   "scenes": [
+    {
+     "type": "icons",
+     "at": "start",
+     "title": "Recovery",
+     "link": "dash",
+     "items": [
+      {
+       "icon": "heart",
+       "label": "*HRV*",
+       "cue": 31
+      },
+      {
+       "icon": "battery",
+       "fillCue": 25
+      }
+     ],
+     "sub": "Depends on your\n*heart rate variability*",
+     "subCue": 31
+    },
+    {
+     "type": "heartbeat",
+     "at": 49,
+     "title": "Heart rate\n*variability*",
+     "gaps": [
+      "0.83 s",
+      "0.97 s",
+      "0.77 s"
+     ],
+     "gapsCue": 54,
+     "sub": "*Variation* in time\nbetween heartbeats",
+     "subCue": 57,
+     "carry": "heart",
+     "carryTo": [
+      90,
+      590,
+      0.55
+     ]
+    },
+    {
+     "type": "hilo",
+     "at": 95,
+     "title": "HRV",
+     "cols": [
+      {
+       "head": "High",
+       "frac": 0.9,
+       "cue": 95,
+       "mark": "check",
+       "markCue": 100,
+       "lines": [
+        {
+         "text": "Better\nrecovery",
+         "cue": 100
+        },
+        {
+         "text": "Manages\nstress",
+         "cue": 107
+        }
+       ]
+      },
+      {
+       "head": "Low",
+       "red": true,
+       "frac": 0.3,
+       "cue": 110,
+       "mark": "cross",
+       "markCue": 123,
+       "lines": [
+        {
+         "text": "Harder to\nmanage stress",
+         "cue": 123
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "html": "whiteboard.html",
+   "name": "wb2",
+   "format": "mp4",
+   "lane": -1,
+   "at_word": 164,
+   "until_word": 202,
+   "scenes": [
+    {
+     "type": "icons",
+     "at": "start",
+     "title": "Cardio",
+     "y": 440,
+     "items": [
+      {
+       "icon": "clock",
+       "label": "*Long*\nduration",
+       "cue": 173
+      },
+      {
+       "icon": "heart",
+       "color": "ink",
+       "label": "*Low*\nintensity",
+       "cue": 175
+      }
+     ]
+    },
+    {
+     "type": "zone",
+     "at": 178,
+     "keep": "dim",
+     "fill": {
+      "to": 60,
+      "cue": 178
+     },
+     "band": {
+      "to": 70,
+      "cue": 180
+     },
+     "axis": "% of max\nheart rate",
+     "axisCue": 184,
+     "check": true,
+     "carry": "heart",
+     "carryTo": [
+      595,
+      690,
+      0.6
+     ]
+    },
+    {
+     "type": "bignum",
+     "at": 190,
+     "keep": "full",
+     "text": "45+",
+     "unit": "min",
+     "x": 200,
+     "y": 860,
+     "note": "at least 45 minutes a session"
+    },
+    {
+     "type": "week",
+     "at": 192,
+     "head": "*3-4x* a week",
+     "headCue": 196,
+     "fills": [
+      {
+       "days": [
+        0,
+        2,
+        4
+       ],
+       "cue": 196
+      },
+      {
+       "days": [
+        6
+       ],
+       "cue": 198,
+       "red": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "html": "cta-comment.html",
+   "name": "cta",
+   "at_word": 209,
+   "cues": {
+    "type": 210
+   },
+   "lane": 2
+  },
+  {
+   "html": "captions-word.html",
+   "name": "captions",
+   "kind": "captions",
+   "at": 0,
+   "lane": 3,
+   "cues": {
+    "hook": 21
+   }
+  }
+ ],
+ "sfx": [
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 21,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/click interface tone.wav",
+   "at_word": 31,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/click interface tone.wav",
+   "at_word": 54,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop hard click.wav",
+   "at_word": 95,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop hard click.wav",
+   "at_word": 110,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/sweep small.wav",
+   "at_word": 164,
+   "volume": 0.4
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/click interface tone.wav",
+   "at_word": 178,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/select tech.wav",
+   "at_word": 190,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop hard click.wav",
+   "at_word": 196,
+   "volume": 0.35
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/typing smartphone.wav",
+   "at_word": 210,
+   "dur": 0.6,
+   "volume": 0.5
+  },
+  {
+   "path": "~/Desktop/editing tools/claude SFX/pop bubble notification.wav",
+   "at_word": 210,
+   "offset": 1.18,
+   "volume": 0.45
+  }
+ ],
+ "music": {
+  "path": "~/Desktop/editing tools/claude music/House Fest - Alejandro Magana (mixkit 113).mp3",
+  "volume": 0.18,
+  "src": 0,
+  "fade_in": 0.3,
+  "fade_out": 1.5
+ }
+}

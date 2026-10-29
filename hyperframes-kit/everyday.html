@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* a week of checks on "the pro racers will do this every day" */
+      #ed-lab {
+        position: absolute;
+        left: 0;
+        top: 1066px;
+        width: 1080px;
+        text-align: center;
+        font-size: 52px;
+      }
+      #ed-row {
+        position: absolute;
+        left: 0;
+        top: 1170px;
+        width: 1080px;
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+      }
+      .day {
+        position: relative;
+        width: 100px;
+        height: 100px;
+      }
+      .ring {
+        position: absolute;
+        inset: 0;
+        border: 3px solid rgba(255, 255, 255, 0.85);
+        border-radius: 50%;
+        background: rgba(20, 18, 19, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+      }
+      .chk {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="everyday" class="stage" data-composition-id="everyday" data-start="0" data-duration="2.33" data-width="1080" data-height="1920">
+      <div id="ed-g" class="clip" data-start="0" data-duration="2.33" data-track-index="0">
+        <div id="ed-lab" class="display lift">Every single day</div>
+        <div id="ed-row">
+          <div class="day"><div class="ring kicker">M</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">T</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">W</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">T</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">F</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">S</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div class="day"><div class="ring kicker">S</div><div class="chk"><svg width="56" height="56" viewBox="0 0 56 56"><path d="M10 29 L23 42 L46 15" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"checks":1.0,"every":1.41,"out":2.03}/*END*/; // "do this", "every day"
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(".chk", { scale: 0, transformOrigin: "center center" });
+      gsap.set("#ed-lab", { opacity: 0 });
+      tl.fromTo(".ring", { opacity: 0, scale: 0.6, transformOrigin: "center center" }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.04 }, 0.05);
+      // one check per day, a beat apart
+      tl.to(".chk", { scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.085 }, C.checks);
+      tl.fromTo("#ed-lab", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out" }, C.every);
+      tl.to(["#ed-lab", ".day"], { opacity: 0, duration: 0.16, ease: "power2.in", stagger: 0.02 }, C.out + 0.01);
+      window.__timelines["everyday"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

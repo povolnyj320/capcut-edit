@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      @font-face { font-family: "ZY Starry"; src: url("assets/fonts/ZY-Starry.ttf"); }
+      .display { font-family: "ZY Starry", sans-serif; text-transform: none; line-height: 1.05; }
+      .kicker { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.08em; }
+      .mono { font-family: "Inter", sans-serif; font-weight: 600; letter-spacing: 0.06em; }
+      .lift { text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+      /* the same curve without recovery: back to start, no gain, then sliding down */
+      #wk-panel {
+        position: absolute;
+        left: 90px;
+        top: 1086px;
+        width: 900px;
+        height: 240px;
+        background: rgba(20, 18, 19, 0.6);
+        border-radius: 14px;
+      }
+      #wk-k {
+        position: absolute;
+        left: 120px;
+        top: 1104px;
+        font-size: 22px;
+        color: var(--red);
+      }
+      #wk-svg {
+        position: absolute;
+        left: 120px;
+        top: 1146px;
+        width: 600px;
+        height: 160px;
+      }
+      #wk-gain {
+        position: absolute;
+        left: 742px;
+        top: 1140px;
+        font-size: 22px;
+      }
+      #wk-weak {
+        position: absolute;
+        left: 740px;
+        top: 1186px;
+        font-size: 60px;
+        color: var(--red);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="weaker" class="stage" data-composition-id="weaker" data-start="0" data-duration="4.06" data-width="1080" data-height="1920">
+      <div id="wk-g" class="clip" data-start="0" data-duration="4.06" data-track-index="0">
+        <div id="wk-panel"></div>
+        <div id="wk-k" class="kicker">Skip recovery</div>
+        <svg id="wk-svg" viewBox="0 0 600 160">
+          <line x1="0" y1="50" x2="600" y2="50" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-dasharray="12 10" />
+          <path id="wk-p1" d="M4 50 L90 50 C 140 50 160 130 210 130 C 270 130 290 50 350 50 L420 50" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+          <path id="wk-p2" d="M420 50 C 470 50 520 120 596 146" fill="none" stroke="#ee2824" stroke-width="5" stroke-linecap="round" />
+        </svg>
+        <div id="wk-gain" class="kicker">No gain</div>
+        <div id="wk-weak" class="display lift">Weaker</div>
+      </div>
+    </div>
+    <script>
+      const C = /*CUES*/{"nogain":1.95,"weaker":2.83,"out":3.76}/*END*/; // "won't get stronger", "You may even get weaker"
+      const p1 = document.getElementById("wk-p1");
+      const p2 = document.getElementById("wk-p2");
+      const l1 = p1.getTotalLength();
+      const l2 = p2.getTotalLength();
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(p1, { strokeDasharray: l1, strokeDashoffset: l1, opacity: 0 });
+      gsap.set(p2, { strokeDasharray: l2, strokeDashoffset: l2, opacity: 0 });
+      gsap.set(["#wk-gain", "#wk-weak"], { opacity: 0 });
+      tl.fromTo("#wk-panel", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0);
+      tl.fromTo("#wk-k", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.12);
+      // "if you're not doing that right, you won't get stronger at all"
+      tl.set(p1, { opacity: 1 }, 0.3);
+      tl.to(p1, { strokeDashoffset: 0, duration: Math.max(0.8, C.weaker - 0.73), ease: "power1.inOut" }, 0.3);
+      tl.fromTo("#wk-gain", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, C.nogain);
+      // "you may even get weaker"
+      tl.set(p2, { opacity: 1 }, C.weaker);
+      tl.to(p2, { strokeDashoffset: 0, duration: 0.7, ease: "power2.in" }, C.weaker);
+      tl.fromTo("#wk-weak", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, C.weaker + 0.17);
+      tl.to(["#wk-panel", "#wk-k", "#wk-svg", "#wk-gain", "#wk-weak"], { opacity: 0, duration: 0.18, ease: "power2.in" }, C.out + 0.08);
+      window.__timelines["weaker"] = tl;
+      tl.seek(0);
+</script>
+  </body>
+</html>

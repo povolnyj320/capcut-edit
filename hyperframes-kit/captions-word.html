@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/hp.css" />
+    <style>
+      /* Merged-style captions (Oct 28; one height the whole reel, the creator Oct 29): one word at a time, ZY Starry, white, key words HP red,
+         soft shadow, on the chest. Each word cuts on and off. Hidden over whiteboards. */
+      #cap-layer {
+        position: absolute;
+        inset: 0;
+      }
+      .cap-word {
+        position: absolute;
+        left: 0;
+        top: 935px;
+        width: 1080px;
+        text-align: center;
+        white-space: nowrap;
+        font-family: "ZY Starry", sans-serif;
+        font-weight: 400;
+        font-size: 80px;
+        letter-spacing: 0;
+        line-height: 1;
+        color: #ffffff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
+        visibility: hidden;
+      }
+      @font-face {
+        font-family: "ZY Starry";
+        src: url("assets/fonts/ZY-Starry.ttf");
+      }
+      .cap-word.key {
+        color: #ee2824;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="capword" class="stage" data-composition-id="capword" data-start="0" data-duration="40.5" data-width="1080" data-height="1920">
+      <div id="cap-g" class="clip" data-start="0" data-duration="40.5" data-track-index="0" data-track-kind="captions">
+        <div id="cap-layer"></div>
+      </div>
+    </div>
+    <script>
+      const WORDS = /*WORDS*/[];
+      const GROUPS = /*GROUPS*/[];
+      const C = /*CUES*/{"out":0}/*END*/;
+      const layer = document.getElementById("cap-layer");
+      const tl = gsap.timeline({ paused: true });
+      // the builder's groups still mark where a caption must stop (a cut-out pause or a cutaway);
+      // inside a group each word holds until the next one starts
+      let prev = 0;
+      GROUPS.forEach((g) => {
+        g.w.forEach((i, k) => {
+          const w = WORDS[i];
+          const el = document.createElement("div");
+          el.className = "cap-word" + (w.key ? " key" : "");
+          el.id = "cw-" + i;
+          el.textContent = w.text;
+          layer.appendChild(el);
+          // Whisper can put a word's start before the one ahead of it: keep each word on at least 0.08 s
+          const start = k ? Math.max(w.start, prev + 0.08) : g.start;
+          const next = k + 1 < g.w.length ? WORDS[g.w[k + 1]].start : g.end;
+          const end = Math.min(Math.max(next, start + 0.08), g.end);
+          prev = start;
+          if (start <= 0) gsap.set(el, { visibility: "visible" });
+          else tl.set(el, { visibility: "visible" }, start);
+          tl.set(el, { visibility: "hidden" }, end);
+        });
+      });
+      window.__timelines["capword"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
