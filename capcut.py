@@ -194,6 +194,10 @@ def tighten(c, db, pad_in, breath, limit_e, ring=0.03):
         if (db[f:f + 3] > on).all():  # 30 ms of voice, not a click
             c["s"] = max(c["s"], f / 100 - pad_in)
             break
+    if c["words"][-1].get("hard_end"):
+        # "hard_end": true ends the clip on the word's own e, for a soft last sound under the voice threshold
+        c["e"] = min(c["words"][-1]["e"], limit_e)
+        return
     g0 = int(max(c["s"], c["words"][-1]["s"] - 0.3) * 100)
     for f in range(int(c["e"] * 100), g0 + 2, -1):
         if (db[f - 3:f] > off).all():
@@ -352,9 +356,11 @@ def build_plan(edl):
         b["src"] = max(0.0, b.get("src", 0) - max(0.0, b.get("dur_wanted", 0)))  # keep the chosen moment
         broll.append(b)
     # HyperFrames graphics with an "html" template get their length and cue times from the words,
-    # so they stay in sync however the cuts move ("281e" = the end of word 281)
+    # so they stay in sync however the cuts move ("281e" = the end of word 281). A float (5.0) is timeline
+    # seconds, for cues inside an intro clip, whose words aren't the speaker's
     gdir = Path(edl.get("graphics_dir", ".")).expanduser()
-    cue = lambda v: word_end(placed, int(v[:-1])) if isinstance(v, str) else word_time(placed, v)
+    cue = lambda v: (word_end(placed, int(v[:-1])) if isinstance(v, str) else
+                     v if isinstance(v, float) else word_time(placed, v))
     graphics = []
     for g in edl.get("graphics", []):
         g = dict(g, t=snap(at(g)))
