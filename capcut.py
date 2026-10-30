@@ -496,6 +496,10 @@ def cmd_graphics(a):
             src = src.replace("/*SCENES*/[]", "/*SCENES*/" + json.dumps(g["scenes"]))
         src = re.sub(r"/\*CUES\*/\{.*?\}/\*END\*/", lambda m: "/*CUES*/" + json.dumps(g["cues"]) + "/*END*/",
                      src, flags=re.S)
+        if g.get("css"):
+            # per-reel placement without touching the template: the caption height that clears the chin
+            # (check.py look) and the lower band moved under it, e.g. ".clip{translate:0 150px}" (Oct 29)
+            src = src.replace("</head>", f"<style>{g['css']}</style>\n  </head>", 1)
         # one spare frame: HyperFrames sometimes renders a frame short, which left a frame of the last
         # face clip before the next cut (Oct 29); the build trims every graphic to its own length anyway
         src = re.sub(r'data-duration="[\d.]+"', f'data-duration="{g["dur"] + 1 / p["fps"]:.3f}"', src)

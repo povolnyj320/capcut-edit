@@ -56,6 +56,8 @@ $CC plan edl.json                                     # the clip list; read it l
 $PY -I check.py ears edl.json                         # re-transcribe every clip as cut, flag mismatches
 $CC graphics edl.json                                 # render the HyperFrames graphics with cue times from the words
 $PY -I check.py frames edl.json look.jpg 1.0 4.5 9.0  # real frames with every graphic and caption live
+$PY -I check.py look edl.json                         # captions against your chin every 0.5 s; a clip in another outfit
+$PY -I check.py still edl.json                        # any graphic sitting still over 1.5 s
 $CC build edl.json                                    # write the timeline (CapCut closed; --replace to rebuild)
 $PY -I check.py gaps edl.json                         # quiet stretches over 0.15 s; one at a cut needs a look
 # open CapCut, tweak, export, quit

@@ -6,7 +6,8 @@ Run with the project venv:
   $PY -I check.py ears <edl.json>             re-transcribe every planned clip as cut, next to the text the plan expects
   $PY -I check.py frames <edl.json> <out.jpg> t1 t2 ..   A-roll or B-roll + every graphic live at t + captions, tiled
   $PY -I check.py gaps <edl.json> [-db -32]   quiet stretches over 0.15 s on the reel's voice track
-  $PY -I check.py still <edl.json> [-max 1.5]  whiteboard stretches that hold still longer than that
+  $PY -I check.py still <edl.json> [-max 1.5]  any graphic (not name tags or the text hook) that holds still longer than that
+  $PY -I check.py look <edl.json>             captions against the face every 0.5 s, and the outfit across the clips
 
 `ears` is the one that matters most. Whisper's word times are only a guide: it folds retakes into one
 line, stretches a word across a pause, and runs "So," into the next word. On Oct 27 the plan read clean
@@ -48,6 +49,24 @@ def cmd_ears(a):
     print(f"{len(p['clips'])} clips, {bad} to check")
 
 
+def base_at(p, t):
+    """What fills the frame at reel time t: (media, source time, scale, "broll" | "intro" | clip index).
+    A push-in clip's scale grows across the clip as the build's keyframes do."""
+    for b in p["broll"]:
+        if b["t"] <= t < b["t"] + b["dur"]:
+            return b["media"], b.get("src", 0) + t - b["t"], 1.0, "broll"
+    if p.get("intro") and t < p["intro"]["dur"]:
+        return str(Path(p["intro"]["media"]).expanduser()), t, 1.0, "intro"
+    k, c = next((k, c) for k, c in enumerate(p["clips"]) if c["t"] <= t < c["t"] + c["dur"])
+    sc = c["scale"] * (1 + min(0.08, 0.025 * c["dur"]) * (t - c["t"]) / c["dur"]) if c["push"] else c["scale"]
+    return p["media"], c["s"] + t - c["t"], sc, k
+
+
+def base_filter(sc):
+    return (f"setpts=PTS-STARTPTS,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+            f"scale=iw*{sc}:ih*{sc},crop=1080:1920")
+
+
 def cmd_frames(a):
     edl = cc.load(a.edl)
     p = cc.build_plan(edl)
@@ -56,23 +75,19 @@ def cmd_frames(a):
     tmp.mkdir(exist_ok=True)
     frames = []
     for k, t in enumerate(a.times):
-        base = None
-        for b in p["broll"]:
-            if b["t"] <= t < b["t"] + b["dur"]:
-                base, st, sc = b["media"], b.get("src", 0) + t - b["t"], 1.0
-        if not base and p.get("intro") and t < p["intro"]["dur"]:
-            base, st, sc = str(Path(p["intro"]["media"]).expanduser()), t, 1.0
-        if not base:
-            c = next(c for c in p["clips"] if c["t"] <= t < c["t"] + c["dur"])
-            base, st, sc = p["media"], c["s"] + t - c["t"], c["scale"]
+        base, st, sc, _ = base_at(p, t)
         # setpts on every input: a seek into the DJI HEVC leaves an offset that makes overlay grab an earlier, blank frame
         ins = ["-ss", f"{st:.3f}", "-i", base]
-        fc = (f"[0:v]setpts=PTS-STARTPTS,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-              f"scale=iw*{sc}:ih*{sc},crop=1080:1920[v0]")
+        fc = f"[0:v]{base_filter(sc)}[v0]"
         last, n = "v0", 1
         for g in sorted([g for g in p["graphics"] if g["t"] <= t < g["t"] + g["dur"]], key=lambda g: g.get("lane", 0)):
             ins += ["-ss", f"{t - g['t']:.3f}", "-i", str(gdir / "out" / f"{g['name']}.{g.get('format', 'mov')}")]
-            fc += f";[{n}:v]setpts=PTS-STARTPTS[g{n}];[{last}][g{n}]overlay[v{n}]"
+            # where CapCut puts it: scaled about the centre, x/y in half-canvas units, y up (name tags, Oct 29:
+            # drawn at the template's own spot, the tags looked clear of the captions and weren't)
+            gs, gx, gy = g.get("scale", 1.0), g.get("x", 0.0), g.get("y", 0.0)
+            ox, oy = 540 - 540 * gs + gx * 540, 960 - 960 * gs - gy * 960
+            fc += (f";[{n}:v]setpts=PTS-STARTPTS,scale=iw*{gs}:ih*{gs}[g{n}];"
+                   f"[{last}][g{n}]overlay=x={ox:.0f}:y={oy:.0f}[v{n}]")
             last, n = f"v{n}", n + 1
         fc += f";[{last}]scale=360:640,drawtext=text='{t:.1f}':x=6:y=6:fontsize=22:fontcolor=yellow[o]"
         fr = tmp / f"{k:02d}.jpg"
@@ -107,25 +122,140 @@ def cmd_gaps(a):
     print(f"{found} quiet stretches over 0.15 s, {len(p['clips'])} clips")
 
 
+# labels that are meant to sit: the text hook and name tags. Captions change with every word.
+STILL_OK = ("text-hook.html", "captions-word.html", "captions-min.html")
+
+
 def cmd_still(a):
-    """Whiteboards that hold still while the creator talks over them (the creator, Oct 29: "the whiteboard doesn't change
-    for a few seconds while I just talk over it"). Lists every stretch over `-max` seconds, in reel time."""
+    """Any graphic that sits on screen without changing (the creator, Oct 29: "the whiteboard doesn't change for a
+    few seconds while I just talk over it", then the same night: "visuals that show up then just sit there"
+    on all six Jett reels; this check had only looked at full whiteboards, so the floating visuals held still
+    for up to 6 s unflagged). Lists every stretch over `-max` seconds where the graphic is visible and no
+    pixel moves, in reel time. Name tags and text hooks are labels and are skipped."""
+    import numpy as np
     edl = cc.load(a.edl)
     p = cc.build_plan(edl)
     gdir = Path(edl.get("graphics_dir", "~")).expanduser()
-    found = 0
+    found, W, H, FPS = 0, 216, 384, 10
     for g in p["graphics"]:
-        if g.get("format") != "mp4":
+        html = g.get("html", "")
+        if g.get("kind") == "captions" or html in STILL_OK or html.startswith(("name-", "intro-tag")):
             continue
-        r = subprocess.run([FF, "-v", "info", "-t", f"{g['dur']:.3f}", "-i", str(gdir / "out" / f"{g['name']}.mp4"),
-                            "-vf", f"scale=270:-1,freezedetect=n=0.002:d={a.max}", "-f", "null", "-"], capture_output=True, text=True)
-        starts = [float(x) for x in re.findall(r"freeze_start: ([\d.]+)", r.stderr)]
-        ends = [float(x) for x in re.findall(r"freeze_end: ([\d.]+)", r.stderr)]
-        ends += [g["dur"]] * (len(starts) - len(ends))  # a hold that runs to the end of the cutaway
-        for s0, s1 in zip(starts, ends):
-            print(f"{g['name']:6} {g['t'] + s0:6.2f}-{g['t'] + s1:6.2f} ({s1 - s0:.1f}s) holds still")
-            found += 1
-    print(f"{found} whiteboard holds over {a.max} s")
+        fmt = g.get("format", "mov")
+        raw = subprocess.run([FF, "-v", "error", "-t", f"{g['dur']:.3f}", "-i", str(gdir / "out" / f"{g['name']}.{fmt}"),
+                              "-vf", f"fps={FPS},scale={W}:{H}", "-pix_fmt", "rgba", "-f", "rawvideo", "-"],
+                             capture_output=True).stdout
+        fr = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 4).astype(np.int16)
+        if fmt == "mp4":
+            fr[..., 3] = 255
+        pm = fr[..., :3] * fr[..., 3:] // 255                        # what shows over the footage
+        vis = (fr[..., 3] > 16).sum(axis=(1, 2)) > 20
+        moved = np.r_[True, (np.abs(np.diff(pm, axis=0)) > 6).any(axis=3).sum(axis=(1, 2)) > 2]
+        still = vis & ~moved
+        i = 0
+        while i < len(still):
+            j = i
+            while j < len(still) and still[j]:
+                j += 1
+            if (j - i) / FPS > a.max:
+                print(f"{g['name']:9} {g['t'] + i / FPS:6.2f}-{g['t'] + j / FPS:6.2f} ({(j - i) / FPS:.1f}s) holds still")
+                found += 1
+            i = max(j, i + 1)
+    print(f"{found} graphic holds over {a.max} s")
+
+
+FACES = Path.home() / ".cache/capcut-edit/faces"
+SDK = "/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk"  # the default SDK doesn't match the compiler
+
+
+def faces(paths):
+    """macOS Vision face boxes [cx, cy, w, h] (0-1, top-left origin) for each image."""
+    if not FACES.exists():
+        FACES.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["swiftc", "-O", "-sdk", SDK, str(Path(__file__).with_name("faces.swift")), "-o", str(FACES)], check=True)
+    out = subprocess.run([str(FACES), *map(str, paths)], capture_output=True, text=True).stdout
+    by = {json.loads(l)["f"]: json.loads(l)["faces"] for l in out.splitlines() if l.strip()}
+    return [max(by.get(str(f), []), key=lambda b: b[2], default=None) for f in paths]
+
+
+def caption_top(edl, gdir):
+    g = next((g for g in edl.get("graphics", []) if g.get("kind") == "captions"), None)
+    if not g:
+        return None, 0
+    css = g.get("css", "") + (gdir / g["html"]).read_text()
+    m = re.search(r"\.cap-word\s*\{[^}]*?top:\s*(\d+)px", css)
+    fs = re.search(r"\.cap-word\s*\{[^}]*?font-size:\s*(\d+)px", css)
+    return int(m.group(1)), int(fs.group(1)) if fs else 80
+
+
+def cmd_look(a):
+    """Captions against the face, and the outfit across the creator's clips, every 0.5 s of the reel.
+    Oct 29: "the captions are right over my chin" (the caption height was set on one shoot and another shoot
+    sits lower in the frame), and "every video ends with a clip of me in a completely different outfit"
+    (a CTA take from another day). Prints the lowest chin, the
+    caption top that clears it, every frame where the captions touch a face, and any clip whose shirt
+    colour doesn't match the rest."""
+    import numpy as np
+    edl = cc.load(a.edl)
+    p = cc.build_plan(edl)
+    gdir = Path(edl.get("graphics_dir", "~")).expanduser()
+    tmp = Path(tempfile.mkdtemp(prefix="look-"))
+    hide = [(g["t"], g["t"] + g["dur"]) for g in p["graphics"] if g.get("format") == "mp4"]  # opaque cutaways
+    samples = []
+    t = 0.05
+    while t < p["end"] - 0.05:
+        if not any(s <= t < e for s, e in hide):
+            base, st, sc, who = base_at(p, t)
+            if who != "broll":
+                samples.append((t, base, st, sc, who))
+        t += 0.5
+    for c in p["clips"]:  # the end of every push-in, where the face is biggest
+        if c["push"]:
+            tt = c["t"] + c["dur"] - 0.05
+            if not any(s <= tt < e for s, e in hide) and base_at(p, tt)[3] != "broll":
+                samples.append((tt, *base_at(p, tt)))
+    paths = []
+    for k, (t, base, st, sc, who) in enumerate(samples):
+        f = tmp / f"{k:04d}.png"
+        subprocess.run([FF, "-v", "error", "-y", "-ss", f"{st:.3f}", "-i", base, "-vf", base_filter(sc),
+                        "-frames:v", "1", str(f)], check=True)
+        paths.append(f)
+    boxes = faces(paths)
+    top, size = caption_top(edl, gdir)
+    chins, shirts, bad = [], {}, []
+    for (t, base, st, sc, who), f, b in zip(samples, paths, boxes):
+        if not b:
+            continue
+        cx, cy, w, h = b[0] * 1080, b[1] * 1920, b[2] * 1080, b[3] * 1920
+        chin = cy + h / 2 + 0.06 * h     # Vision's box stops just above the chin
+        chins.append((chin, t, who))
+        if top is not None and top < chin + 30:
+            bad.append(f"  {t:6.2f}s ({'intro' if who == 'intro' else 'clip ' + str(who)}) chin at {chin:.0f}, captions at {top}")
+        if who != "intro":   # shirt: a patch under the chin, the width of the face
+            img = subprocess.run([FF, "-v", "error", "-i", str(f), "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                                 capture_output=True).stdout
+            px = np.frombuffer(img, np.uint8).reshape(1920, 1080, 3)
+            y0, y1 = int(min(chin + 0.5 * h, 1880)), int(min(chin + 1.3 * h, 1919))
+            x0, x1 = int(max(cx - w / 2, 0)), int(min(cx + w / 2, 1079))
+            if y1 > y0 + 10:
+                shirts.setdefault(who, []).append(np.median(px[y0:y1, x0:x1].reshape(-1, 3), axis=0))
+    for part, cs in (("intro", [c for c in chins if c[2] == "intro"]), ("face", [c for c in chins if c[2] != "intro"])):
+        if cs:
+            low = max(cs)
+            print(f"{part:5} lowest chin {low[0]:.0f} px at {low[1]:.2f}s, captions at {top} px (need {low[0] + 30:.0f} or lower)")
+    print(f"{len(bad)} frames with the captions on a face" + ("" if bad else ""))
+    for line in bad[:12]:
+        print(line)
+    if shirts:
+        per = {k: np.median(v, axis=0) for k, v in shirts.items()}
+        # the clip closest to all the others is the outfit of the shoot; anything far from it is another day
+        ref = min(per.values(), key=lambda v: sum(np.abs(v - u).max() for u in per.values()))
+        odd = [(k, v) for k, v in per.items() if np.abs(v - ref).max() > 45]
+        print(f"outfit: {len(per)} clips, shirt colour {ref.astype(int).tolist()} (RGB)")
+        for k, v in odd:
+            c = p["clips"][k]
+            print(f"  DIFFERENT OUTFIT clip {k} at {c['t']:.2f}s, shirt {v.astype(int).tolist()}: "
+                  f"\"{' '.join(w['w'] for w in c['words'])[:60]}\"")
 
 
 def main():
@@ -139,11 +269,12 @@ def main():
     g = sub.add_parser("gaps")
     g.add_argument("edl")
     g.add_argument("-db", type=float, default=-32)
+    sub.add_parser("look").add_argument("edl")
     s = sub.add_parser("still")
     s.add_argument("edl")
     s.add_argument("-max", type=float, default=1.5)
     a = ap.parse_args()
-    {"ears": cmd_ears, "frames": cmd_frames, "gaps": cmd_gaps, "still": cmd_still}[a.cmd](a)
+    {"ears": cmd_ears, "frames": cmd_frames, "gaps": cmd_gaps, "still": cmd_still, "look": cmd_look}[a.cmd](a)
 
 
 if __name__ == "__main__":
